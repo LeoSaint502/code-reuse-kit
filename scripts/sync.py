@@ -40,8 +40,14 @@ def find_ca() -> str:
 
 
 def run(cmd: list, cwd: str | None = None, check: bool = True):
+    # Resolve executable path (critical on Windows for .cmd/.bat like npm)
+    exe = shutil.which(cmd[0])
+    resolved = [exe] + cmd[1:] if exe else cmd
     try:
-        subprocess.run(cmd, cwd=cwd, check=check, text=True)
+        subprocess.run(resolved, cwd=cwd, check=check, text=True)
+    except FileNotFoundError:
+        print(f"  [ERR] 命令未找到: {' '.join(cmd)}", file=sys.stderr)
+        sys.exit(1)
     except subprocess.CalledProcessError as e:
         print(f"  [ERR] 命令失败 (exit={e.returncode})", file=sys.stderr)
         sys.exit(1)

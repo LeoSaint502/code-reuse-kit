@@ -53,8 +53,11 @@ def fail(msg: str):
 
 
 def run(cmd: list, cwd: str | None = None, check: bool = True):
+    # Resolve executable path (critical on Windows for .cmd/.bat like npm)
+    exe = shutil.which(cmd[0])
+    resolved = [exe] + cmd[1:] if exe else cmd
     try:
-        subprocess.run(cmd, cwd=cwd, check=check, text=True, timeout=60)
+        subprocess.run(resolved, cwd=cwd, check=check, text=True, timeout=60)
     except subprocess.CalledProcessError as e:
         if check:
             print(f"  ✗ 命令失败: {' '.join(cmd)} (exit={e.returncode})", file=sys.stderr)

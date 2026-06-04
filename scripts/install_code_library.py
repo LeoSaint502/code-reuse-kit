@@ -36,8 +36,11 @@ def ok(msg: str = "[OK] 完成"):
 
 
 def run(cmd: list, cwd: str | None = None, check: bool = True):
+    # Resolve executable path (critical on Windows for .cmd/.bat like npm)
+    exe = shutil.which(cmd[0])
+    resolved = [exe] + cmd[1:] if exe else cmd
     try:
-        subprocess.run(cmd, cwd=cwd, check=check, text=True)
+        subprocess.run(resolved, cwd=cwd, check=check, text=True)
     except FileNotFoundError:
         print(f"  ✗ 命令未找到: {' '.join(cmd)}", file=sys.stderr)
         sys.exit(1)
