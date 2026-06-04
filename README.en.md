@@ -246,7 +246,17 @@ This project builds upon and references the following open-source projects:
 
 `extract_from_diff.py` uses Python's `ast` module and compound-agent's `lesson` JSONL storage format.
 
+
+
+### Platform & AI
+
+| Platform | Role |
+|----------|------|
+| **[Reasonix](https://reasonix.ai)** | AI coding agent — primary execution environment, runs the /code-reuse-kit-save skill |
+| **[DeepSeek](https://deepseek.com)** | Underlying LLM — powers code extraction, analysis, and search intelligence |
+
 ---
+
 
 ## License
 

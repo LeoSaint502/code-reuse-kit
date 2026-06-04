@@ -309,7 +309,15 @@ python ~/code-reuse-kit/scripts/backfill_code_library.py --dir /path/to/project/
 - Python 标准库 `ast` 模块（官方文档）
 - compound-agent 的 `lesson` 存储格式（JSONL schema）
 
+### 开发平台 & AI
+
+| 平台 | 用途 |
+|------|------|
+| **[Reasonix](https://reasonix.ai)** | AI coding agent — 本项目的核心执行环境，/code-reuse-kit-save skill 的运行平台 |
+| **[DeepSeek](https://deepseek.com)** | 底层大语言模型 — 驱动代码提取、分析、搜索的 AI 能力 |
+
 ---
+
 
 ## 兼容的 AI Agent
 
