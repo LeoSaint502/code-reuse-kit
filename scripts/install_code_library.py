@@ -281,6 +281,27 @@ def install_auto_hooks():
     ok("全自动配置安装完成")
 
 
+
+def install_reasonix_code_reuse_skill():
+    """[7/9] 安装 Reasonix code-reuse skill（修正版，指向 code-reuse-kit）"""
+    step("[7/9] 安装 Reasonix code-reuse skill")
+    skill_src = os.path.join(DEST, "skills", "code-reuse-skill.md")
+    
+    # Reasonix 内置 skill 目录
+    skill_dst_dir = os.path.expanduser("~/.codex/skills/code-reuse")
+    
+    os.makedirs(skill_dst_dir, exist_ok=True)
+    skill_dst = os.path.join(skill_dst_dir, "SKILL.md")
+    
+    if not os.path.isfile(skill_src):
+        print(f"  ⚠ 未找到 {skill_src}，跳过")
+        return
+    
+    shutil.copy2(skill_src, skill_dst)
+    ok(f"已安装到 {skill_dst}")
+    ok("注意: 修正版 SKILL.md 使用 ~/code-reuse-kit/ 路径，不会重复出现 'code-library 不存在' 的错误")
+
+
 def install_agent_configs():
     """[8/9] 安装其他 AI agent 自动存档规则"""
     step("[8/9] 安装其他 AI agent 自动存档规则")
@@ -307,6 +328,7 @@ def main():
     init_compound_agent()
     install_reasonix_config()
     install_code_library_skill()
+    install_reasonix_code_reuse_skill()
     install_agent_configs()
     install_auto_hooks()
     print_summary()
