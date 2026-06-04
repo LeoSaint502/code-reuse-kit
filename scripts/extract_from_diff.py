@@ -80,7 +80,7 @@ def parse_args():
 # ── Git 操作 ────────────────────────────────────────────────────────────
 
 def _git(*args: str, cwd: str) -> str:
-    r = subprocess.run(["git", *args], cwd=cwd, capture_output=True, text=True)
+    r = subprocess.run(["git", *args], cwd=cwd, capture_output=True, text=True, encoding="utf-8")
     if r.returncode != 0:
         print(f"[WARN] git {' '.join(args)} 失败: {r.stderr.strip()}", file=sys.stderr)
         return ""
