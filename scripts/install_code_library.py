@@ -8,6 +8,8 @@ Usage:
     python scripts/install_code_library.py
 """
 
+from __future__ import annotations
+
 import os
 import platform
 import shutil

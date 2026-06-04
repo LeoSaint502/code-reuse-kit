@@ -15,6 +15,8 @@ install_hooks.py — 一键安装全自动代码提取 & 同步。
   python install_hooks.py --uninstall  # 卸载
 """
 
+from __future__ import annotations
+
 import argparse
 import os
 import platform

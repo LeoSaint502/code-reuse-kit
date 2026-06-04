@@ -19,6 +19,8 @@ install_agent_config.py — 为所有主流 AI agent 安装代码存档规则。
   python install_agent_config.py --list                # 列出检测到的 agent
 """
 
+from __future__ import annotations
+
 import argparse
 import os
 import shutil
