@@ -25,8 +25,8 @@ def main():
     ap.add_argument("query"); ap.add_argument("--limit", type=int, default=5)
     args = ap.parse_args()
     ca = find_ca()
-    r = subprocess.run([ca, "search", args.query], capture_output=True, text=True)
-    out = r.stdout.strip()
+    r = subprocess.run([ca, "search", args.query], capture_output=True, text=False)
+    out = r.stdout.decode('utf-8', errors='replace').strip()
     if not out:
         print('No results found for "%s".' % args.query)
         return
