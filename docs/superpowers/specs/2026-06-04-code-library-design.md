@@ -115,7 +115,7 @@ ca setup
 
 ### 5. AGENTS.md 规则
 
-**位置**：`C:\Users\user\AppData\Roaming\reasonix\AGENTS.md`
+**位置**：`%APPDATA%/reasonix/AGENTS.md`（Windows）或 `~/.config/reasonix/AGENTS.md`（其他）
 
 添加以下规则：
 ```

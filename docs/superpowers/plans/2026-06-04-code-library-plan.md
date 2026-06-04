@@ -573,19 +573,19 @@ Expected: Committed.
 ### Task 4: Install code-reuse skill for Reasonix
 
 **Files:**
-- Create: `C:\Users\user\.codex\skills\code-reuse\SKILL.md`
+- Create: `~/.codex/skills/code-reuse/SKILL.md`
 
 - [ ] **Step 1: Create skill directory**
 
 Run:
 ```bash
-mkdir -p "C:\Users\user\.codex\skills\code-reuse"
+mkdir -p ~/.codex/skills/code-reuse
 ```
 Expected: Directory created.
 
 - [ ] **Step 2: Write the skill file**
 
-Create `C:\Users\user\.codex\skills\code-reuse\SKILL.md`:
+Create `~/.codex/skills/code-reuse/SKILL.md`:
 
 ```markdown
 # code-reuse — 代码复用库
@@ -652,11 +652,11 @@ Expected: Committed.
 ### Task 5: Update AGENTS.md rules
 
 **Files:**
-- Modify: `C:\Users\user\AppData\Roaming\reasonix\AGENTS.md`
+- Modify: `%APPDATA%/reasonix/AGENTS.md`（或 `~/.config/reasonix/AGENTS.md`）
 
 - [ ] **Step 1: Add code reuse rules to AGENTS.md**
 
-Append to `C:\Users\user\AppData\Roaming\reasonix\AGENTS.md`:
+Append to Reasonix 的 AGENTS.md（根据操作系统自动检测路径）：
 
 ```markdown
 ## 代码复用规则
