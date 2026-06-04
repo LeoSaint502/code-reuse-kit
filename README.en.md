@@ -1,0 +1,253 @@
+# Code Reuse Kit
+
+> **Never write the same function twice.** Automatically index reusable functions/classes from your git history and search them with AI agents.
+
+A cross-device, cross-project code reuse toolkit. It extracts functions from your **git diff** after every commit, indexes them via **compound-agent** (`ca learn`), and makes them searchable by your AI coding agent — so you never reinvent the wheel.
+
+---
+
+## Quick Start
+
+### Prerequisites
+
+| Requirement | Version | Check |
+|-------------|---------|-------|
+| [Git](https://git-scm.com/downloads) | Any recent version | `git --version` |
+| [Python](https://www.python.org/downloads/) | 3.8+ | `python --version` |
+| [Node.js](https://nodejs.org/) (LTS) | 18+ | `node --version` |
+
+### One-Click Install
+
+```bash
+git clone https://github.com/LeoSaint502/code-reuse-kit.git
+cd code-reuse-kit
+python scripts/install_code_library.py
+```
+
+The installer automatically:
+1. Installs **compound-agent** (`ca`) — the semantic search engine
+2. Installs a global **post-commit hook** — extracts new functions on every `git commit`
+3. Configures your AI agent (if supported) for zero-ops auto-archiving
+
+Takes about 1-3 minutes. That's it — you're ready to go.
+
+---
+
+## How It Works
+
+```
+You write code -> git commit
+                       |
+                       v
+               +----------------------+
+               | post-commit hook     |  <- auto-triggers after every commit
+               | extracts new funcs   |
+               +----------+-----------+
+                          |
+                          v
+               +----------------------+
+               | ca learn registers   |
+               | index -> index.jsonl |
+               +----------+-----------+
+                          |
+                          v
+               +----------------------+
+               | git push (manual)    |
+               | sync to GitHub       |
+               +----------+-----------+
+                          |
+                          v
+               +------------------------------+
+               | AI agent searches before     |
+               | writing new code             |
+               | found -> reuse / not found -> new |
+               +------------------------------+
+```
+
+### What gets indexed?
+
+Only **metadata cards** — not the full source code:
+
+```
+[function] extract_tables     <- function name
+Extract tables from docx...   <- docstring (first 200 chars)
+File: scripts/extract.py:42  <- file + line number
+```
+
+No code duplication, no sensitive business logic leakage, minimal token overhead.
+
+---
+
+## Usage Verification
+
+### Method 1: Search the Index
+
+```bash
+cd ~/code-reuse-kit
+python scripts/search_code.py "extract"
+```
+
+Example output:
+```
+## Results for "extract"
+  - [info] Found 8 lesson(s):
+  - [L1a533985493c34a5] [function] step_extract
+  - [L6ebf9a976268f828] [function] _fallback_extract_direct
+```
+
+### Method 2: Inspect the Index File
+
+```
+~/code-reuse-kit/.claude/lessons/index.jsonl
+```
+
+Each line is one function/class record (name + description + location, not the code body).
+
+### Method 3: Check AI Agent Responses
+
+In projects following the rules, the agent will state:
+- **"Reused [xxx] from code library"** — wheel was not reinvented
+- **"No reusable code found, wrote from scratch"** — genuinely new functionality
+
+### Method 4: GitHub Sync
+
+The index file is git-tracked and pushed to GitHub. Anyone cloning the repo gets the full index.
+
+### Current Index Stats (as of 2025-06-04)
+
+| Source | Entries | Description |
+|--------|:-------:|-------------|
+| Project 1 scripts/ | 49 | analyze_bid / extract_tables / generate_docs, etc. |
+| Project 2 | 3 | _apply_polish.py functions |
+| **Total** | **52** | Growing with every commit |
+
+---
+
+## Daily Workflow
+
+### With Reasonix (Recommended, Zero Ops)
+
+The `/code-reuse-kit-save` skill is auto-installed. The agent handles everything — you just tell it what to code.
+
+### With Claude Code
+
+Global `CLAUDE.md` is configured during installation. Zero ops — the agent auto-archives at the end of every task.
+
+### With Cursor / Copilot / Windsurf
+
+Run once per project:
+```bash
+python ~/code-reuse-kit/scripts/install_agent_config.py --project .
+```
+
+After that, the agent auto-commits and archives at the end of every task.
+
+---
+
+## Backfill Existing Projects
+
+Already have a project with lots of code? Index it all at once:
+
+```bash
+python ~/code-reuse-kit/scripts/backfill_code_library.py --dir /path/to/your/project/scripts
+```
+
+Scans all `.py` files, extracts every function/class definition, and registers them in the index.
+
+---
+
+## Manual Commands
+
+```bash
+# Search the index
+python ~/code-reuse-kit/scripts/search_code.py "keywords"
+
+# Manually extract (usually auto-triggered by hook)
+python ~/code-reuse-kit/scripts/extract_from_diff.py --repo .
+
+# Sync with remote
+cd ~/code-reuse-kit && python scripts/sync.py
+
+# Uninstall auto-config
+python ~/code-reuse-kit/scripts/install_hooks.py --uninstall
+
+# Reinstall / update
+python ~/code-reuse-kit/scripts/install_code_library.py
+```
+
+---
+
+## Compatible AI Agents
+
+| Agent | Archiving Method | User Effort |
+|-------|:----------------:|:-----------:|
+| Reasonix | `/code-reuse-kit-save` skill | Zero |
+| Claude Code | Global `~/.claude/CLAUDE.md` | Zero |
+| Cursor | `.cursorrules` per project | One-time config |
+| GitHub Copilot | `.github/copilot-instructions.md` per project | One-time config |
+| Windsurf | `.windsurfrules` per project | One-time config |
+| Any git-aware tool | post-commit hook | Manual `git add + commit` |
+
+---
+
+## Dependencies
+
+| Dependency | Purpose |
+|------------|---------|
+| Git | Clone/sync repo + post-commit hook |
+| Python 3 | Run extraction / search / sync scripts |
+| Node.js / npm | Install compound-agent |
+| compound-agent (`ca`) | Semantic search + knowledge management |
+
+---
+
+## Project Structure
+
+```
+~/code-reuse-kit/
+  scripts/
+    extract_from_diff.py       <- Extract code from git diff -> index
+    search_code.py             <- Search the index
+    backfill_code_library.py   <- * Backfill existing project code
+    install_code_library.py    <- One-click installer (start here)
+    install_hooks.py           <- Install global git hook + scheduler
+    install_agent_config.py    <- Install AI agent auto-archive rules
+    sync.py                    <- Daily sync (git pull + rebuild index)
+  skills/
+    code-reuse-kit-save.md     <- Reasonix auto-archive skill
+  docs/
+    agent-instructions/        <- Shared prompt templates for all agents
+  .claude/lessons/             <- Accumulated index entries (git-tracked)
+```
+
+---
+
+## Acknowledgements
+
+This project builds upon and references the following open-source projects:
+
+### Core Foundation
+
+| Project | Role | What We Used |
+|---------|------|-------------|
+| **[compound-agent](https://github.com/Nathandela/compound-agent)** | Storage + search engine | JSONL+SQLite FTS5 storage, `ca learn/list/search` command design |
+| **[claudecode-kb](https://github.com/tangero/claudecode-kb)** | Organizational pattern | Knowledge base structure (`patterns/snippets/troubleshooting/memory`) |
+
+### Researched but Not Directly Used
+
+| Project | Why Not Used | What We Learned |
+|---------|-------------|-----------------|
+| **[reza](https://github.com/swebreza/reza)** | Aims to index entire project files, not snippets | SQLite + FTS5 storage architecture |
+| **[Lumen](https://github.com/Sardor-M/lumen)** | Depends on MCP tools (Reasonix incompatible) | Cross-device encrypted sync concept |
+| **[Alembic](https://github.com/GxFn/Alembic)** | Heavy MCP dependency | Tree-sitter AST for code pattern extraction |
+| **[claudio-codex](https://github.com/Abraxas-365/claudio-codex)** | Code structure indexer, not reuse library | Function-level indexing granularity |
+
+### Extraction Layer
+
+`extract_from_diff.py` uses Python's `ast` module and compound-agent's `lesson` JSONL storage format.
+
+---
+
+## License
+
+MIT
