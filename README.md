@@ -279,6 +279,36 @@ python ~/code-library/scripts/backfill_code_library.py --dir /path/to/project/sc
 
 会自动扫描所有 .py 文件，提取函数/类定义注册到索引。已在项目1（49 条）和项目2（3 条）验证通过。
 
+
+
+## 📚 参考与致谢
+
+本项目参考/借鉴了以下 GitHub 开源项目：
+
+### 核心底座
+
+| 项目 | 用途 | 参考了什么 |
+|------|------|-----------|
+| **[compound-agent](https://github.com/Nathandela/compound-agent)** ⭐18 | 存储引擎 + 搜索引擎 | JSONL+SQLite FTS5 存储模式，`ca learn/list/search` 命令设计，lessons 生命周期管理，hook 系统 |
+| **[claudecode-kb](https://github.com/tangero/claudecode-kb)** ⭐9 | 文件组织思路 | 按 `patterns/snippets/troubleshooting/memory` 分类的知识库结构，JSONL 会话日志 append-only 设计 |
+
+### 调研但未直接采用
+
+这些项目提供了重要的设计参考和不做什么的决策依据：
+
+| 项目 | 为什么不直接用 | 学到了什么 |
+|------|---------------|-----------|
+| **[reza](https://github.com/swebreza/reza)** (Python) | 目标是项目文件索引，不是代码片段复用 | SQLite + FTS5 的存储架构思路 |
+| **[Lumen](https://github.com/Sardor-M/lumen)** ⭐7 (TypeScript) | 核心依赖 23 个 MCP 工具，Reasonix 不支持 MCP | 知识图谱 + 跨设备加密同步的理念 |
+| **[Alembic](https://github.com/GxFn/Alembic)** (TypeScript) | 重度依赖 MCP 协议 | Tree-sitter AST 提取代码模式的思路 |
+| **[claudio-codex](https://github.com/Abraxas-365/claudio-codex)** ⭐4 (Go) | 是代码结构索引器，不是代码复用库 | 函数级代码索引的粒度 |
+
+### 代码提取层的技术来源
+
+`extract_from_diff.py` 中的 AST 解析逻辑参考了：
+- Python 标准库 `ast` 模块（官方文档）
+- compound-agent 的 `lesson` 存储格式（JSONL schema）
+
 ---
 
 ## 兼容的 AI Agent
