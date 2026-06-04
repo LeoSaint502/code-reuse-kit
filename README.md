@@ -230,8 +230,8 @@ python scripts/search_code.py "关键词"
 
 | 来源 | 索引条目 | 说明 |
 |------|:--------:|------|
-| private-project项目 scripts/ | 49 | analyze_bid / extract_tables / generate_docs 等 7 个脚本 |
-| private-docx-project项目 | 3 | _apply_polish.py 的 3 个函数 |
+| 项目1 scripts/ | 49 | analyze_bid / extract_tables / generate_docs 等 7 个脚本 |
+| 项目2 | 3 | _apply_polish.py 的 3 个函数 |
 | **总计** | **52 条** | 持续增长中 |
 
 ---
@@ -277,7 +277,7 @@ python scripts/search_code.py "关键词"
 python ~/code-library/scripts/backfill_code_library.py --dir /path/to/project/scripts
 ```
 
-会自动扫描所有 .py 文件，提取函数/类定义注册到索引。已在private-project项目（49 条）和private-docx-project项目（3 条）验证通过。
+会自动扫描所有 .py 文件，提取函数/类定义注册到索引。已在项目1（49 条）和项目2（3 条）验证通过。
 
 ---
 
