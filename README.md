@@ -195,36 +195,91 @@ cd code-library
 python scripts/install_code_library.py
 ```
 
-## 🔄 全自动工作流
+## ✅ 使用验证 — 如何确保"没有再造轮子"
 
-安装后你只需做一件事：**正常写代码 + `git commit`**。
+> 系统自动积累可复用的代码索引。你可以通过以下 4 种方式验证它是否在工作。
 
-```
-你写代码 → git add → git commit
-                            │
-                            ▼
-                    ┌────────────────────┐
-                    │ post-commit hook    │  ← 全局 Git hook，所有仓库生效
-                    │ 自动提取新增函数入库 │
-                    └────────┬───────────┘
-                             │
-                             ▼
-                    ┌────────────────────┐
-                    │ ca learn 注册       │
-                    │ compound-agent 索引 │
-                    └────────┬───────────┘
-                             │
-                    ┌────────▼───────────┐
-                    │ 每天 10:00 定时任务 │  ← 自动 git push 跨设备同步
-                    │ 自动同步到远端     │
-                    └────────────────────┘
+### 验证方法 ①：搜索已有代码
+
+```bash
+cd ~/code-library
+python scripts/search_code.py "关键词"
 ```
 
-| 步骤 | 触发方式 | 谁做 |
-|------|---------|------|
-| 提取新增代码入库 | `git commit` 后自动触发 | post-commit hook |
-| 跨设备同步 | 每天 10:00 自动执行 | Windows 计划任务 / cron |
-| 搜索已有代码 | 手动或 AI agent 调用 | `search_code.py` |
+例如搜索 "extract"，返回 8 条匹配结果。
+
+### 验证方法 ②：看索引文件
+
+索引存储位置：
+```
+~/code-library/.claude/lessons/index.jsonl
+```
+每一行是一条函数/类的记录（只存"名片"：函数名 + 说明 + 位置，不存代码本体）。
+
+### 验证方法 ③：看 AI agent 的回复
+
+在遵循规则的项目中，agent 每次任务结束时会在回复中标明：
+- **"复用了 xxx 代码（来源: 代码图书馆）"** — 说明本次没有重写轮子
+- **"无可复用代码，全部新写"** — 说明本次是新功能
+
+### 验证方法 ④：查看 GitHub 同步记录
+
+索引文件 `.claude/lessons/index.jsonl` 被 git 跟踪，push 到 GitHub 后，任何人都可以 clone 后直接用。
+
+### 当前索引统计（截至 2026-06-04）
+
+| 来源 | 索引条目 | 说明 |
+|------|:--------:|------|
+| private-project项目 scripts/ | 49 | analyze_bid / extract_tables / generate_docs 等 7 个脚本 |
+| private-docx-project项目 | 3 | _apply_polish.py 的 3 个函数 |
+| **总计** | **52 条** | 持续增长中 |
+
+---
+
+## 🔄 全自动工作流（更新版）
+
+安装后你只需做一件事：**正常写代码 + git commit**。
+
+```
+
+你写代码 -> git commit
+                  |
+                  v
+          +----------------------+
+          | post-commit hook     |  <- 自动提取新增函数入库
+          +----------+-----------+
+                     |
+                     v
+          +----------------------+
+          | ca learn 注册        |
+          | 索引写入 index.jsonl |
+          +----------+-----------+
+                     |
+                     v
+          +----------------------+
+          | git push（手动/定时）|
+          | 同步到 GitHub        |
+          +----------+-----------+
+                     |
+                     v
+          +----------------------+
+          | AI agent 下次写代码前|
+          | search_code.py 自动搜|
+          | 找到->复用 / 找不到->新写|
+          +----------------------+
+```
+
+### 新工具：补录已有项目代码
+
+如果有一个已经写了很多代码的旧项目，想一次性入库：
+
+```bash
+python ~/code-library/scripts/backfill_code_library.py --dir /path/to/project/scripts
+```
+
+会自动扫描所有 .py 文件，提取函数/类定义注册到索引。已在private-project项目（49 条）和private-docx-project项目（3 条）验证通过。
+
+---
 
 ## 兼容的 AI Agent
 
@@ -277,6 +332,7 @@ python ~/code-library/scripts/install_agent_config.py --project .
   scripts/
     extract_from_diff.py       ← 从 git diff 提取代码入库
     search_code.py             ← 搜索已有代码
+    backfill_code_library.py   ← ★ 补录已有项目的历史代码到索引
     install_code_library.py    ← 💡 一键安装（从这里开始）
     install_hooks.py           ← 安装全局 git hook + 定时任务
     install_agent_config.py    ← 安装 AI agent 自动存档规则
