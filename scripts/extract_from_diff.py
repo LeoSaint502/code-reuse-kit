@@ -30,10 +30,12 @@ from pathlib import Path
 # ── ca 命令定位（兼容 Windows / Linux / macOS） ──────────────────────────
 
 def find_ca() -> str:
+    # Windows: .cmd 优先，否则 subprocess 无法执行 shell 脚本
+    if os.name == "nt":
+        ca = _which("ca.cmd")
+        if ca:
+            return ca
     ca = _which("ca")
-    if ca:
-        return ca
-    ca = _which("ca.cmd")
     if ca:
         return ca
     fallbacks = [
@@ -95,19 +97,48 @@ def has_parent(repo_path: str) -> bool:
     return bool(out.strip())
 
 
+def get_text_files(repo_path: str, diff_ref: str) -> list[str]:
+    """获取本次 diff 中非二进制文件的列表。
+
+    用 --numstat 识别二进制文件（输出 "-	-	<file>"），只保留文本文件。
+    """
+    out = _git("diff", diff_ref, "--numstat", cwd=repo_path)
+    if not out.strip():
+        return []
+    text_files = []
+    for line in out.splitlines():
+        parts = line.split("	", 2)
+        if len(parts) < 3:
+            continue
+        added, deleted, fpath = parts[0], parts[1], parts[2]
+        # 二进制文件在 added/deleted 列显示 "-" 而非数字
+        if added == "-" and deleted == "-":
+            continue
+        text_files.append(fpath)
+    return text_files
+
+
 def get_diff(repo_path: str, diff_ref: str | None) -> str:
-    """获取 git diff 输出。自动选择对比 ref。"""
+    """获取 git diff 输出，自动跳过二进制文件。"""
     if diff_ref is None:
         diff_ref = "HEAD~1" if has_parent(repo_path) else "4b825dc"
+
+    text_files = get_text_files(repo_path, diff_ref)
+    if not text_files:
+        return ""
+
     # --unified=0: 不输出上下文，只输出新增/删除行
-    out = _git("diff", diff_ref, "--unified=0", cwd=repo_path)
+    out = _git("diff", diff_ref, "--unified=0", "--", *text_files, cwd=repo_path)
     return out
 
 
 def get_diff_stat(repo_path: str) -> str:
-    """获取 --stat 用于判断是否有变更"""
+    """获取 --stat 用于判断是否有变更（只统计文本文件）"""
     ref = "HEAD~1" if has_parent(repo_path) else "4b825dc"
-    return _git("diff", ref, "--stat", cwd=repo_path)
+    text_files = get_text_files(repo_path, ref)
+    if not text_files:
+        return ""
+    return _git("diff", ref, "--stat", "--", *text_files, cwd=repo_path)
 
 
 # ── Diff 解析 ────────────────────────────────────────────────────────────
@@ -327,7 +358,7 @@ def register(ca: str, summary: str, tags: list[str], citation: str, dry_run: boo
     """调用 ca learn 注册一个代码条目"""
     cmd = [
         ca, "learn", summary,
-        "--type", "pattern",
+        "--type", "lesson",
         "--citation", citation,
     ]
     if tags:
@@ -357,6 +388,7 @@ def name_from_summary(s: str) -> str:
 # ── 主流程 ──────────────────────────────────────────────────────────────
 
 def main():
+    sys.stdout.reconfigure(encoding='utf-8')
     args = parse_args()
     repo = os.path.abspath(args.repo)
 
