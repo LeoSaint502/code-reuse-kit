@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+*.pyo
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+.cache/
+.env
+.venv/
+venv/
+node_modules/
+tmp/
