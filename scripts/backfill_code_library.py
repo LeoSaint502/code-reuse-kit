@@ -16,7 +16,7 @@ import json
 from pathlib import Path
 
 # 代码图书馆根目录（ca learn 的 cwd，影响 lessons 写入位置）
-CODE_LIBRARY = os.path.expanduser("~/code-library")
+CODE_LIBRARY = os.path.expanduser("~/code-reuse-kit")
 
 
 def parse_args():
@@ -153,7 +153,7 @@ def main():
     print("\n" + "=" * 60)
     print(f"✅ 共注册 {total_registered} 个函数/类到代码图书馆")
     print(f"   索引位置: {CODE_LIBRARY}/.claude/lessons/index.jsonl")
-    print(f"   搜索: python ~/code-library/scripts/search_code.py 关键词")
+    print(f"   搜索: python ~/code-reuse-kit/scripts/search_code.py 关键词")
     print("=" * 60)
 
 

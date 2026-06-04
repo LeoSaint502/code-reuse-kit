@@ -23,7 +23,7 @@ import stat
 import subprocess
 import sys
 
-CODE_LIBRARY_DIR = os.path.expanduser("~/code-library")
+CODE_LIBRARY_DIR = os.path.expanduser("~/code-reuse-kit")
 SCRIPTS_DIR = os.path.join(CODE_LIBRARY_DIR, "scripts")
 HOOKS_DIR = os.path.expanduser("~/.git-hooks")
 POST_COMMIT_PATH = os.path.join(HOOKS_DIR, "post-commit")
@@ -97,7 +97,7 @@ def install_post_commit_hook():
     ensure_hooks_dir()
 
     hook_content = f'''#!/usr/bin/env sh
-# ── Code Library: auto-extract on commit ──────────────────────────
+# ── Code Reuse Kit: auto-extract on commit ──────────────────────────
 # 每次 git commit 后，自动从本次 diff 中提取新增函数/类入库。
 # 由 install_hooks.py 安装，无需手动操作。
 
@@ -113,7 +113,7 @@ if [ -z "$REPO_DIR" ]; then
     exit 0
 fi
 
-# 跳过 code-library 仓库自身（避免递归）
+# 跳过 code-reuse-kit 仓库自身（避免递归）
 if [ "$REPO_DIR" = "{CODE_LIBRARY_DIR}" ]; then
     exit 0
 fi
@@ -195,7 +195,7 @@ def _install_windows_task():
 
 def _install_cron_job():
     """用 crontab 添加每天一次的同步任务"""
-    cron_line = f"0 10 * * * cd {CODE_LIBRARY_DIR} && {sys.executable} {SYNC_SCRIPT} >> ~/code-library/sync.log 2>&1"
+    cron_line = f"0 10 * * * cd {CODE_LIBRARY_DIR} && {sys.executable} {SYNC_SCRIPT} >> ~/code-reuse-kit/sync.log 2>&1"
 
     # 检查是否已有
     try:
@@ -255,7 +255,7 @@ def check_git_installed():
 def print_banner():
     print("""
 +------------------------------------------------------+
-|  Code Library — 全自动安装                           |
+|  Code Reuse Kit — 全自动安装                           |
 |  安装后只要正常 git commit，代码自动入库 + 定时同步  |
 +------------------------------------------------------+
 """)
@@ -288,7 +288,7 @@ def main():
     if do_git:
         print("\n--- [1/2] 安装全局 git post-commit hook ---")
         print("  原理: git commit 后自动触发 extract_from_diff.py，无需手动操作。")
-        print(f"  对所有仓库生效（跳过 code-library 自身）。\n")
+        print(f"  对所有仓库生效（跳过 code-reuse-kit 自身）。\n")
         set_global_hooks_path()
         install_post_commit_hook()
 

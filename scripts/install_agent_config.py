@@ -28,7 +28,7 @@ import sys
 # ── 路径 ────────────────────────────────────────────────────────────────
 
 PROMPT_SRC = os.path.join(
-    os.path.dirname(__file__), "..", "docs", "agent-instructions", "code-library-save-prompt.md"
+    os.path.dirname(__file__), "..", "docs", "agent-instructions", "code-reuse-kit-save-prompt.md"
 )
 
 # 每个 agent 的配置目标路径
@@ -167,7 +167,7 @@ def install_config(key: str, prompt: str, project_root: str | None = None):
     # 检查是否已存在（避免重复追加）
     if os.path.isfile(dest):
         with open(dest, encoding="utf-8") as f:
-            if "code-library-save-prompt" in f.read() or "Code Library" in f.read():
+            if "code-reuse-kit-save-prompt" in f.read() or "Code Reuse Kit" in f.read():
                 ok(f"{cfg['name']} 已配置，跳过")
                 return True
         # 追加到已有文件
@@ -216,7 +216,7 @@ def install_project(project_root: str, prompt: str):
 def print_banner():
     print("""
 +------------------------------------------------------+
-|  Code Library — 安装 AI Agent 自动存档规则           |
+|  Code Reuse Kit — 安装 AI Agent 自动存档规则           |
 |  让任何 agent 在任务结束时自动保存代码               |
 +------------------------------------------------------+
 """)

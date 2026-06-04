@@ -1,4 +1,4 @@
-# Code Library — 代码存档规则
+# Code Reuse Kit — 代码存档规则
 
 > 每次任务结束时自动将新增代码存进个人代码图书馆。
 > 原理：git add → git commit → post-commit hook 自动提取入库。
@@ -39,16 +39,16 @@ git commit -m "auto: <简短的中文说明，写清楚新增了什么功能>"
 
 开始写代码之前，优先搜索是否有现成的：
 
-**安装 Code Library 后可用：**
+**安装 Code Reuse Kit 后可用：**
 ```bash
-python ~/code-library/scripts/search_code.py "<任务关键词>"
+python ~/code-reuse-kit/scripts/search_code.py "<任务关键词>"
 ```
 
 如果找到匹配的代码，优先复用而不是重新写。
 
 ## 为什么需要做这个
 
-安装 Code Library 时，系统已经配置了：
+安装 Code Reuse Kit 时，系统已经配置了：
 1. **全局 git post-commit hook** — 每次 `git commit` 后自动提取新增函数入库
 2. **定时同步任务** — 每天自动跨设备同步
 

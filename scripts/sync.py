@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-sync.py — Sync code-library with remote: git pull + rebuild index.
+sync.py — Sync code-reuse-kit with remote: git pull + rebuild index.
 
 Usage:
-    cd ~/code-library && python scripts/sync.py
+    cd ~/code-reuse-kit && python scripts/sync.py
 """
 
 import os
@@ -11,7 +11,7 @@ import shutil
 import subprocess
 import sys
 
-DEST = os.path.expanduser("~/code-library")
+DEST = os.path.expanduser("~/code-reuse-kit")
 
 
 def find_ca() -> str:
@@ -52,7 +52,7 @@ def main():
     elif hasattr(sys.stdout, "buffer"):
         sys.stdout = sys.stdout.buffer
 
-    print("=== Code Library Sync ===")
+    print("=== Code Reuse Kit Sync ===")
 
     # 1. Git pull
     print(">> git pull --ff-only ...")

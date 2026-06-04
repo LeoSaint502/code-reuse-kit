@@ -1,4 +1,4 @@
-# Code Library — AI Agent 代码复用库设计文档
+# Code Reuse Kit — AI Agent 代码复用库设计文档
 
 ## 概述
 
@@ -9,7 +9,7 @@
 ```
 ┌─────────────────────────────────────────────────────┐
 │                    Git 仓库（跨机器同步）              │
-│  ~/code-library/                                     │
+│  ~/code-reuse-kit/                                     │
 │  ├── lessons/              ← compound-agent JSONL    │
 │  ├── .cache/lessons.sqlite ← FTS5 搜索引擎           │
 │  └── scripts/              ← 代码提取层              │
@@ -43,7 +43,7 @@
 **安装**：
 ```bash
 npm install -g compound-agent
-mkdir -p ~/code-library && cd ~/code-library
+mkdir -p ~/code-reuse-kit && cd ~/code-reuse-kit
 ca setup
 ```
 
@@ -61,7 +61,7 @@ ca setup
 
 ### 2. extract_from_diff.py（代码提取层）
 
-**位置**：`~/code-library/scripts/extract_from_diff.py`
+**位置**：`~/code-reuse-kit/scripts/extract_from_diff.py`
 
 **功能**：
 - 解析 `git diff HEAD~1` 或两个 commit 之间的差异
@@ -89,7 +89,7 @@ ca setup
 
 ### 3. search_code.py（搜索封装）
 
-**位置**：`~/code-library/scripts/search_code.py`
+**位置**：`~/code-reuse-kit/scripts/search_code.py`
 
 **功能**：封装 `ca search`，输出格式化结果
 
@@ -121,12 +121,12 @@ ca setup
 ```
 ## 代码复用规则
 
-1. **任务开始时**：自动运行 `python ~/code-library/scripts/search_code.py "<任务关键词>"`，
+1. **任务开始时**：自动运行 `python ~/code-reuse-kit/scripts/search_code.py "<任务关键词>"`，
    将返回的已有代码片段注入 context
 2. **写代码时**：如果写了可复用的函数/类，记录文件路径和用途
-3. **任务结束时**：自动运行 `python ~/code-library/scripts/extract_from_diff.py --repo <当前路径>`
+3. **任务结束时**：自动运行 `python ~/code-reuse-kit/scripts/extract_from_diff.py --repo <当前路径>`
    扫描 git diff，提取新增代码入库
-4. **定期**：运行 `cd ~/code-library && git push` 同步到其他机器
+4. **定期**：运行 `cd ~/code-reuse-kit && git push` 同步到其他机器
 ```
 
 ## 数据格式
@@ -140,7 +140,7 @@ ca setup
 ## 实施步骤
 
 1. **安装 compound-agent**：`npm install -g compound-agent`
-2. **初始化代码库**：`mkdir -p ~/code-library && cd ~/code-library && ca setup && git init`
+2. **初始化代码库**：`mkdir -p ~/code-reuse-kit && cd ~/code-reuse-kit && ca setup && git init`
 3. **编写 extract_from_diff.py**：实现 git diff 解析 + 函数提取 + ca learn 调用
 4. **编写 search_code.py**：封装 ca search，格式化输出
 5. **安装 code-reuse skill**：复制 skill 文件到 `~/.codex/skills/code-reuse/`

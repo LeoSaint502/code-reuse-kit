@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-search_code.py — 搜索 code-library 中的已有代码。
+search_code.py — 搜索 code-reuse-kit 中的已有代码。
 
 用法：
   python search_code.py "pdf 提取"
@@ -67,7 +67,7 @@ def main():
         print(f"没有找到与 \"{args.query}\" 相关的代码。")
         return
 
-    print(f"\n## Code Library: \"{args.query}\" 的搜索结果\n")
+    print(f"\n## Code Reuse Kit: \"{args.query}\" 的搜索结果\n")
     lines = [l.strip() for l in output.splitlines() if l.strip()]
     count = 0
     for line in lines:

@@ -411,7 +411,7 @@ def main():
     if report_lines:
         mode = " [模拟]" if args.dry_run else ""
         print(f"\n{'='*50}")
-        print(f"  Code Library 提取报告{mode}")
+        print(f"  Code Reuse Kit 提取报告{mode}")
         print(f"{'='*50}")
         for l in report_lines:
             print(l)

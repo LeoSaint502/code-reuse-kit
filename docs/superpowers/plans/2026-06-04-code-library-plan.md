@@ -1,4 +1,4 @@
-# Code Library Implementation Plan
+# Code Reuse Kit Implementation Plan
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
@@ -10,13 +10,13 @@
 
 ---
 
-### Task 1: Install compound-agent & Init Code Library
+### Task 1: Install compound-agent & Init Code Reuse Kit
 
 **Files:**
-- Create: `~/code-library/` directory
-- Create: `~/code-library/scripts/` directory
-- Create: `~/code-library/lessons/index.jsonl` (created by `ca setup`)
-- Create: `~/code-library/.cache/` (created by `ca setup`)
+- Create: `~/code-reuse-kit/` directory
+- Create: `~/code-reuse-kit/scripts/` directory
+- Create: `~/code-reuse-kit/lessons/index.jsonl` (created by `ca setup`)
+- Create: `~/code-reuse-kit/.cache/` (created by `ca setup`)
 
 - [ ] **Step 1: Install compound-agent globally**
 
@@ -30,8 +30,8 @@ Expected: Installs `ca` CLI binary globally.
 
 Run:
 ```bash
-mkdir -p ~/code-library
-cd ~/code-library
+mkdir -p ~/code-reuse-kit
+cd ~/code-reuse-kit
 ca setup
 ```
 Expected: `ca setup` creates `.claude/` with lessons structure and hooks.
@@ -40,15 +40,15 @@ Expected: `ca setup` creates `.claude/` with lessons structure and hooks.
 
 Run:
 ```bash
-mkdir -p ~/code-library/scripts
+mkdir -p ~/code-reuse-kit/scripts
 ```
-Expected: `~/code-library/scripts/` exists.
+Expected: `~/code-reuse-kit/scripts/` exists.
 
 - [ ] **Step 4: Initialize Git repo**
 
 Run:
 ```bash
-cd ~/code-library
+cd ~/code-reuse-kit
 git init
 git add -A
 git commit -m "init: code library with compound-agent"
@@ -69,7 +69,7 @@ Expected: `ca --version` returns version string, `ca search "test"` returns resu
 ### Task 2: Write extract_from_diff.py
 
 **Files:**
-- Create: `~/code-library/scripts/extract_from_diff.py`
+- Create: `~/code-reuse-kit/scripts/extract_from_diff.py`
 
 This script is the core of the system. It:
 1. Runs `git diff` between the current state and a reference commit (default: HEAD~1)
@@ -81,7 +81,7 @@ This script is the core of the system. It:
 
 - [ ] **Step 1: Write the script scaffold**
 
-Create `~/code-library/scripts/extract_from_diff.py`:
+Create `~/code-reuse-kit/scripts/extract_from_diff.py`:
 
 ```python
 #!/usr/bin/env python3
@@ -410,7 +410,7 @@ if __name__ == "__main__":
 
 Run:
 ```bash
-chmod +x ~/code-library/scripts/extract_from_diff.py
+chmod +x ~/code-reuse-kit/scripts/extract_from_diff.py
 ```
 Expected: No error.
 
@@ -418,8 +418,8 @@ Expected: No error.
 
 Run:
 ```bash
-cd ~/code-library
-python ~/code-library/scripts/extract_from_diff.py --repo . --dry-run
+cd ~/code-reuse-kit
+python ~/code-reuse-kit/scripts/extract_from_diff.py --repo . --dry-run
 ```
 Expected: Script runs without error (may find no changes since initial commit).
 
@@ -427,7 +427,7 @@ Expected: Script runs without error (may find no changes since initial commit).
 
 Run:
 ```bash
-cd ~/code-library
+cd ~/code-reuse-kit
 git add scripts/extract_from_diff.py
 git commit -m "feat: add code extraction script (extract_from_diff.py)"
 ```
@@ -438,11 +438,11 @@ Expected: Committed.
 ### Task 3: Write search_code.py
 
 **Files:**
-- Create: `~/code-library/scripts/search_code.py`
+- Create: `~/code-reuse-kit/scripts/search_code.py`
 
 - [ ] **Step 1: Write the script**
 
-Create `~/code-library/scripts/search_code.py`:
+Create `~/code-reuse-kit/scripts/search_code.py`:
 
 ```python
 #!/usr/bin/env python3
@@ -501,7 +501,7 @@ def format_results(raw_output: str, query: str, limit: int) -> str:
         return ""
 
     lines = raw_output.strip().splitlines()
-    header = f"## Code Library: Results for \"{query}\"\n"
+    header = f"## Code Reuse Kit: Results for \"{query}\"\n"
     body_lines = []
 
     count = 0
@@ -546,7 +546,7 @@ if __name__ == "__main__":
 
 Run:
 ```bash
-chmod +x ~/code-library/scripts/search_code.py
+chmod +x ~/code-reuse-kit/scripts/search_code.py
 ```
 Expected: No error.
 
@@ -554,7 +554,7 @@ Expected: No error.
 
 Run:
 ```bash
-python ~/code-library/scripts/search_code.py "test"
+python ~/code-reuse-kit/scripts/search_code.py "test"
 ```
 Expected: Runs without error, returns empty results (library is new).
 
@@ -562,7 +562,7 @@ Expected: Runs without error, returns empty results (library is new).
 
 Run:
 ```bash
-cd ~/code-library
+cd ~/code-reuse-kit
 git add scripts/search_code.py
 git commit -m "feat: add code search script (search_code.py)"
 ```
@@ -604,7 +604,7 @@ Create `~/.codex/skills/code-reuse/SKILL.md`:
 
 ```python
 # 自动搜索当前任务相关的已有代码
-python ~/code-library/scripts/search_code.py "<任务关键词>"
+python ~/code-reuse-kit/scripts/search_code.py "<任务关键词>"
 ```
 
 将搜索结果中的已有代码函数签名 + 摘要注入到当前 context。
@@ -621,14 +621,14 @@ python ~/code-library/scripts/search_code.py "<任务关键词>"
 自动扫描 git diff 提取新增代码：
 
 ```
-python ~/code-library/scripts/extract_from_diff.py --repo <项目路径>
+python ~/code-reuse-kit/scripts/extract_from_diff.py --repo <项目路径>
 ```
 
 如果项目不是 git 仓库，跳过。
 
 ### 跨设备同步
 
-定期运行 `cd ~/code-library && git add -A && git commit -m "sync" && git push`
+定期运行 `cd ~/code-reuse-kit && git add -A && git commit -m "sync" && git push`
 
 ## 注意事项
 
@@ -637,11 +637,11 @@ python ~/code-library/scripts/extract_from_diff.py --repo <项目路径>
 - 搜索不到结果不代表没有，尝试不同关键词
 ```
 
-- [ ] **Step 3: Commit code-library changes**
+- [ ] **Step 3: Commit code-reuse-kit changes**
 
 Run:
 ```bash
-cd ~/code-library
+cd ~/code-reuse-kit
 git add -A
 git commit -m "feat: add code-reuse skill"
 ```
@@ -667,7 +667,7 @@ Append to Reasonix 的 AGENTS.md（根据操作系统自动检测路径）：
 
 在开始写任何代码之前，先运行：
 ```
-python ~/code-library/scripts/search_code.py "<任务核心关键词>"
+python ~/code-reuse-kit/scripts/search_code.py "<任务核心关键词>"
 ```
 如果找到了匹配的代码，优先复用而不是重新写。
 
@@ -682,7 +682,7 @@ python ~/code-library/scripts/search_code.py "<任务核心关键词>"
 
 每个任务完成后（最后一条消息之前），自动运行：
 ```
-python ~/code-library/scripts/extract_from_diff.py --repo <当前项目根目录>
+python ~/code-reuse-kit/scripts/extract_from_diff.py --repo <当前项目根目录>
 ```
 - 如果项目不是 git 仓库，跳过
 - 如果没有新增代码，跳过
@@ -691,7 +691,7 @@ python ~/code-library/scripts/extract_from_diff.py --repo <当前项目根目录
 
 每天至少一次：
 ```
-cd ~/code-library && git add -A && git commit -m "daily sync" && git push
+cd ~/code-reuse-kit && git add -A && git commit -m "daily sync" && git push
 ```
 以及在其他机器上 `git pull`。
 
@@ -705,7 +705,7 @@ cd ~/code-library && git add -A && git commit -m "daily sync" && git push
 
 Run:
 ```bash
-cd ~/code-library
+cd ~/code-reuse-kit
 git add -A
 git commit -m "docs: add code reuse rules to AGENTS.md"
 ```
@@ -716,18 +716,18 @@ Expected: Committed.
 ### Task 6: Git Remote Setup & Initial Push
 
 **Files:**
-- Modify: `~/code-library/.git/config`
+- Modify: `~/code-reuse-kit/.git/config`
 
 - [ ] **Step 1: Create a GitHub repository**
 
-Visit https://github.com/new and create a repo named `code-library` (private or public as you prefer).
+Visit https://github.com/new and create a repo named `code-reuse-kit` (private or public as you prefer).
 
 - [ ] **Step 2: Add remote and push**
 
 Run:
 ```bash
-cd ~/code-library
-git remote add origin git@github.com:<YOUR_USERNAME>/code-library.git
+cd ~/code-reuse-kit
+git remote add origin git@github.com:<YOUR_USERNAME>/code-reuse-kit.git
 git push -u origin main
 ```
 Expected: Code library pushed to GitHub.
@@ -736,7 +736,7 @@ Expected: Code library pushed to GitHub.
 
 Run:
 ```bash
-cd ~/code-library && git status
+cd ~/code-reuse-kit && git status
 ```
 Expected: Clean working tree, nothing to commit.
 
@@ -793,7 +793,7 @@ git commit -m "add multiply function"
 
 Run:
 ```bash
-python ~/code-library/scripts/extract_from_diff.py --repo /tmp/test-reuse-repo
+python ~/code-reuse-kit/scripts/extract_from_diff.py --repo /tmp/test-reuse-repo
 ```
 Expected: Output shows "Registered: [function] multiply..." and "Summary: 1 code item extracted".
 
@@ -801,7 +801,7 @@ Expected: Output shows "Registered: [function] multiply..." and "Summary: 1 code
 
 Run:
 ```bash
-python ~/code-library/scripts/search_code.py "multiply"
+python ~/code-reuse-kit/scripts/search_code.py "multiply"
 ```
 Expected: Returns the registered multiply function entry.
 
@@ -817,7 +817,7 @@ Expected: Clean.
 
 Run:
 ```bash
-cd ~/code-library
+cd ~/code-reuse-kit
 git add -A
 git commit -m "chore: finalize code library setup"
 ```

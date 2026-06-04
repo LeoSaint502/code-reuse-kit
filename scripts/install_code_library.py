@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-install_code_library.py — One-click setup of the code-library ecosystem.
+install_code_library.py — One-click setup of the code-reuse-kit ecosystem.
 
 Usage:
-    git clone https://github.com/LeoSaint502/code-library.git
-    cd code-library
+    git clone https://github.com/LeoSaint502/code-reuse-kit.git
+    cd code-reuse-kit
     python scripts/install_code_library.py
 """
 
@@ -18,8 +18,8 @@ import sys
 HOOKS_INSTALLER = os.path.join(os.path.dirname(__file__), "install_hooks.py")
 AGENT_CONFIG_INSTALLER = os.path.join(os.path.dirname(__file__), "install_agent_config.py")
 
-GITHUB_REPO = "https://github.com/LeoSaint502/code-library.git"
-DEST = os.path.expanduser("~/code-library")
+GITHUB_REPO = "https://github.com/LeoSaint502/code-reuse-kit.git"
+DEST = os.path.expanduser("~/code-reuse-kit")
 AGENTS_SECTION_MARKER = "## 代码复用规则"
 
 
@@ -104,7 +104,7 @@ def check_prerequisites():
 
 
 def clone_or_pull():
-    step("[2/9] 拉取 code-library 仓库")
+    step("[2/9] 拉取 code-reuse-kit 仓库")
     if os.path.isdir(os.path.join(DEST, ".git")):
         print("  仓库已存在，执行 git pull...")
         run(["git", "pull", "--ff-only"], cwd=DEST)
@@ -170,7 +170,7 @@ def install_reasonix_config():
 
 在开始写任何代码之前，先运行：
 ```
-python ~/code-library/scripts/search_code.py "<任务核心关键词>"
+python ~/code-reuse-kit/scripts/search_code.py "<任务核心关键词>"
 ```
 如果找到了匹配的代码，优先复用而不是重新写。
 
@@ -183,7 +183,7 @@ python ~/code-library/scripts/search_code.py "<任务核心关键词>"
 
 ### 规则 3：任务结束时自动存档（核心规则）
 
-**每个任务结束时，必须调用 `/code-library-save` skill。**
+**每个任务结束时，必须调用 `/code-reuse-kit-save` skill。**
 
 该 skill 会自动执行：
 1. `git init`（如果还不是 git 仓库）
@@ -192,7 +192,7 @@ python ~/code-library/scripts/search_code.py "<任务核心关键词>"
 4. post-commit hook 自动完成代码提取入库
 
 用户不需要知道 git 是什么，agent 全包了。
-如果提示 `/code-library-save` 找不到，手动执行：
+如果提示 `/code-reuse-kit-save` 找不到，手动执行：
 ```
 git add -A && git commit -m "auto: 添加了[功能]"
 ```
@@ -200,7 +200,7 @@ git add -A && git commit -m "auto: 添加了[功能]"
 ### 规则 4：跨设备同步
 
 由系统定时任务（每天 10:00）自动完成，agent 无需干预。
-在其他设备上只需 `cd ~/code-library && git pull` 即可获取最新代码索引。
+在其他设备上只需 `cd ~/code-reuse-kit && git pull` 即可获取最新代码索引。
 
 ### 规则 5：相关 memory 检查
 
@@ -234,17 +234,17 @@ def print_summary():
     每天 10:00          → 自动跨设备同步
 
   🤖 AI agent 自动存档已配置:
-    ✅ Reasonix → /code-library-save skill（任务结束自动存档）
+    ✅ Reasonix → /code-reuse-kit-save skill（任务结束自动存档）
     ✅ Claude Code → ~/.claude/CLAUDE.md（全局规则）
     ✅ Cursor / Copilot / Windsurf → 每项目规则（由 install_agent_config 安装）
 
   🔍 手动搜索已有代码:
-    python ~/code-library/scripts/search_code.py "关键词"
+    python ~/code-reuse-kit/scripts/search_code.py "关键词"
 
   🛠 其他:
-    [卸载自动配置]   python ~/code-library/scripts/install_hooks.py --uninstall
-    [重装/更新]      python ~/code-library/scripts/install_code_library.py
-    [安装 agent 规则] python ~/code-library/scripts/install_agent_config.py --project 项目路径
+    [卸载自动配置]   python ~/code-reuse-kit/scripts/install_hooks.py --uninstall
+    [重装/更新]      python ~/code-reuse-kit/scripts/install_code_library.py
+    [安装 agent 规则] python ~/code-reuse-kit/scripts/install_agent_config.py --project 项目路径
 
   下一步:
     - 正常写代码，agent 任务结束自动存档
@@ -254,12 +254,12 @@ def print_summary():
 
 
 def install_code_library_skill():
-    """[6/9] 安装 code-library-save skill（任务结束自动存档）"""
-    step("[6/9] 安装 code-library-save skill")
-    skill_src = os.path.join(DEST, "skills", "code-library-save.md")
+    """[6/9] 安装 code-reuse-kit-save skill（任务结束自动存档）"""
+    step("[6/9] 安装 code-reuse-kit-save skill")
+    skill_src = os.path.join(DEST, "skills", "code-reuse-kit-save.md")
     skill_dst_dir = os.path.expanduser("~/.reasonix/skills")
     os.makedirs(skill_dst_dir, exist_ok=True)
-    skill_dst = os.path.join(skill_dst_dir, "code-library-save.md")
+    skill_dst = os.path.join(skill_dst_dir, "code-reuse-kit-save.md")
     if os.path.isfile(skill_src):
         import shutil
         shutil.copy2(skill_src, skill_dst)
@@ -292,8 +292,8 @@ def main():
         sys.stdout = sys.stdout.buffer  # raw bytes fallback
     print("""
 +------------------------------------------------------+
-|  Code Library -- One-Click Install                   |
-|  https://github.com/LeoSaint502/code-library         |
+|  Code Reuse Kit -- One-Click Install                   |
+|  https://github.com/LeoSaint502/code-reuse-kit         |
 +------------------------------------------------------+
 """)
     check_prerequisites()

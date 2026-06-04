@@ -1,4 +1,4 @@
-# code-library-save — 任务结束时自动存档到个人代码图书馆
+# code-reuse-kit-save — 任务结束时自动存档到个人代码图书馆
 
 > Agent 在任务结束时自动执行 git 操作，让 post-commit hook 完成代码提取入库。
 > **用户不需要碰命令行。**
