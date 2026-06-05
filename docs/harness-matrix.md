@@ -22,8 +22,10 @@ This document makes the Code Reuse Kit harness explicit. A guide tells an agent 
 |---|---|
 | `tests/test_code_reuse_common.py` | Shared path, citation, tag, summary, and command behavior. |
 | `tests/test_audit_index.py` | Index audit parsing, quality checks, and privacy sanitization. |
+| `tests/test_check_consistency.py` | Documentation reference and required-script consistency checks. |
 | `scripts/doctor.py` | Local installation health without exposing private values. |
 | `scripts/audit_index.py` | JSONL index health, stale citation, duplicate, and low-quality insight checks. |
+| `scripts/check_consistency.py` | README/AGENTS local path and required-script drift checks. |
 | `python -m py_compile ...` | Syntax health for command-line scripts. |
 | `--dry-run` flags | Preview ingestion before writing to the code library. |
 | `ca search` through `scripts/search_code.py` | Confirms indexed entries are retrievable. |
@@ -52,11 +54,11 @@ Diagnostics must sanitize:
 - A new agent can navigate from `AGENTS.md`.
 - A human can run `python scripts\doctor.py` and get actionable installation health.
 - A human can run `python scripts\audit_index.py` and inspect index quality without mutating the index.
+- A human can run `python scripts\check_consistency.py` and catch doc drift before commit.
 - Tests prove that diagnostic output does not expose common private values.
 - README files tell users where the doctor command fits.
 
 ## Later Backlog
 
-- Consistency checks for README command drift.
 - Hook execution log surfaced through the doctor command.
 - JSON report consumption by future CI or agent review tools.

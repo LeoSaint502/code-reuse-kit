@@ -87,6 +87,7 @@ Code Reuse Kit is a practical Harness Engineering component: a memory and reuse 
 3. Search retrieves prior work before new code is written.
 4. Doctor diagnostics check the local harness without exposing private paths or credentials.
 5. Index audit checks stale citations, duplicate entries, and low-quality metadata without modifying the index.
+6. Consistency checks catch missing local docs and scripts before they drift.
 
 Run:
 
@@ -105,6 +106,13 @@ Audit index quality:
 ```bash
 python scripts/audit_index.py
 python scripts/audit_index.py --json
+```
+
+Check documentation consistency:
+
+```bash
+python scripts/check_consistency.py
+python scripts/check_consistency.py --json
 ```
 
 Diagnostic output is privacy-safe by default: home paths, emails, credential-like values, and authenticated URLs are sanitized.
@@ -221,6 +229,9 @@ cd ~/code-reuse-kit && python scripts/sync.py
 # Audit index quality
 python ~/code-reuse-kit/scripts/audit_index.py
 
+# Check documentation consistency
+python ~/code-reuse-kit/scripts/check_consistency.py
+
 # Uninstall auto-config
 python ~/code-reuse-kit/scripts/install_hooks.py --uninstall
 
@@ -267,6 +278,7 @@ python ~/code-reuse-kit/scripts/install_code_library.py
     install_agent_config.py    <- Install AI agent auto-archive rules
     doctor.py                  <- Privacy-safe local health diagnostics
     audit_index.py             <- Privacy-safe index quality audit
+    check_consistency.py       <- Privacy-safe documentation consistency check
     sync.py                    <- Daily sync (git pull + rebuild index)
   skills/
     code-reuse-kit-save.md     <- Reasonix auto-archive skill

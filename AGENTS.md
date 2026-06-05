@@ -23,6 +23,7 @@ Code Reuse Kit is a practical Harness Engineering memory and reuse layer for cod
 | `scripts/sync.py` | Pull and rebuild the local code reuse index. |
 | `scripts/doctor.py` | Privacy-safe local health diagnostics. |
 | `scripts/audit_index.py` | Privacy-safe index quality audit. |
+| `scripts/check_consistency.py` | Privacy-safe documentation consistency check. |
 
 ## Verification
 
@@ -32,9 +33,11 @@ Run focused checks before reporting completion:
 python -m unittest tests.test_code_reuse_common -v
 python -m unittest tests.test_doctor -v
 python -m unittest tests.test_audit_index -v
-python -m py_compile scripts\code_reuse_common.py scripts\doctor.py scripts\audit_index.py
+python -m unittest tests.test_check_consistency -v
+python -m py_compile scripts\code_reuse_common.py scripts\doctor.py scripts\audit_index.py scripts\check_consistency.py
 python scripts\doctor.py
 python scripts\audit_index.py
+python scripts\check_consistency.py
 ```
 
 Use dry runs before writing to the code library:
