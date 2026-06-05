@@ -167,7 +167,7 @@ A: 就是"命令提示符"。按键盘左下角的 `Windows 键 + R`，输入 `c
 **Q: "路径"是什么？**
 A: 就是你放代码的文件夹的地址。比如你桌面上有个文件夹叫 `my-code`，路径通常是：
 ```
-C:\Users\你的用户名\Desktop\my-code
+<你的项目路径>\my-code
 ```
 在黑框里输入 `cd 路径` 就可以去到那个文件夹。
 
@@ -278,6 +278,29 @@ python ~/code-reuse-kit/scripts/backfill_code_library.py --dir /path/to/project/
 ```
 
 会自动扫描所有 .py 文件，提取函数/类定义注册到索引。已在项目1（49 条）和项目2（3 条）验证通过。
+
+## Harness 最小闭环
+
+Code Reuse Kit 是一个落地型 Harness Engineering 组件：它为 coding agent 提供代码记忆与复用层。最小闭环是：
+
+1. Guides 告诉 agent 去哪里找可复用代码。
+2. Hook 和入库脚本记录可复用元数据。
+3. Search 在写新代码前找回历史方案。
+4. Doctor 诊断本地 harness 状态，同时避免泄露个人路径或凭据。
+
+运行：
+
+```bash
+python scripts/doctor.py
+```
+
+机器可读输出：
+
+```bash
+python scripts/doctor.py --json
+```
+
+诊断输出默认做隐私保护：会脱敏 home 路径、邮箱、疑似凭据和值带认证信息的 URL。
 
 ## 更新说明：Windows 搜索与补录修复
 

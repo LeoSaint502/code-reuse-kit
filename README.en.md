@@ -78,6 +78,31 @@ No code duplication, no sensitive business logic leakage, minimal token overhead
 
 ---
 
+## Harness Minimum Loop
+
+Code Reuse Kit is a practical Harness Engineering component: a memory and reuse layer for coding agents. The minimum loop is:
+
+1. Guides tell the agent where reusable code lives.
+2. Hooks and ingestion scripts record reusable metadata.
+3. Search retrieves prior work before new code is written.
+4. Doctor diagnostics check the local harness without exposing private paths or credentials.
+
+Run:
+
+```bash
+python scripts/doctor.py
+```
+
+For machine-readable output:
+
+```bash
+python scripts/doctor.py --json
+```
+
+Diagnostic output is privacy-safe by default: home paths, emails, credential-like values, and authenticated URLs are sanitized.
+
+---
+
 ## Usage Verification
 
 ### Method 1: Search the Index
