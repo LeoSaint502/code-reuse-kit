@@ -64,5 +64,4 @@ Diagnostics must sanitize:
 
 ## Later Backlog
 
-- Hook execution log surfaced through the doctor command.
 - JSON report consumption by future agent review tools.
