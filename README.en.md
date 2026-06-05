@@ -119,7 +119,7 @@ python scripts/check_consistency.py --json
 Run the same lightweight suite used by CI:
 
 ```bash
-python scripts/ci_verify.py
+python scripts/ci_verify.py --full
 ```
 
 Diagnostic output is privacy-safe by default: home paths, emails, credential-like values, and authenticated URLs are sanitized.
@@ -240,7 +240,7 @@ python ~/code-reuse-kit/scripts/audit_index.py
 python ~/code-reuse-kit/scripts/check_consistency.py
 
 # Run lightweight CI verification locally
-python ~/code-reuse-kit/scripts/ci_verify.py
+python ~/code-reuse-kit/scripts/ci_verify.py --full
 
 # Uninstall auto-config
 python ~/code-reuse-kit/scripts/install_hooks.py --uninstall

@@ -8,6 +8,7 @@ Code Reuse Kit is a practical Harness Engineering memory and reuse layer for cod
 
 - Read `README.en.md` or `README.md` for user-facing setup and workflow.
 - Read `docs/harness-matrix.md` for guides, sensors, feedback loops, and privacy boundaries.
+- Read `docs/testing-strategy.md` for the test layers and CI gate.
 - Read `docs/superpowers/specs/` and `docs/superpowers/plans/` for designed changes.
 
 ## Core Scripts
@@ -39,7 +40,7 @@ python -m py_compile scripts\code_reuse_common.py scripts\doctor.py scripts\audi
 python scripts\doctor.py
 python scripts\audit_index.py
 python scripts\check_consistency.py
-python scripts\ci_verify.py
+python scripts\ci_verify.py --full
 ```
 
 Use dry runs before writing to the code library:

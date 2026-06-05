@@ -17,6 +17,7 @@ DEFAULT_DOCS = [
     "README.md",
     "README.en.md",
     "docs/harness-matrix.md",
+    "docs/testing-strategy.md",
 ]
 
 DEFAULT_REQUIRED_SCRIPTS = [

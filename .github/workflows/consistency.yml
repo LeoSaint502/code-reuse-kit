@@ -17,4 +17,4 @@ jobs:
           python-version: "3.11"
 
       - name: Run verification
-        run: python scripts/ci_verify.py
+        run: python scripts/ci_verify.py --full

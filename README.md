@@ -320,7 +320,7 @@ python scripts/check_consistency.py --json
 运行与 CI 相同的轻量验证套件：
 
 ```bash
-python scripts/ci_verify.py
+python scripts/ci_verify.py --full
 ```
 
 诊断输出默认做隐私保护：会脱敏 home 路径、邮箱、疑似凭据和值带认证信息的 URL。
@@ -413,7 +413,7 @@ python ~/code-reuse-kit/scripts/audit_index.py
 python ~/code-reuse-kit/scripts/check_consistency.py
 
 # 本地运行轻量 CI 验证
-python ~/code-reuse-kit/scripts/ci_verify.py
+python ~/code-reuse-kit/scripts/ci_verify.py --full
 
 # 卸载自动配置
 python ~/code-reuse-kit/scripts/install_hooks.py --uninstall

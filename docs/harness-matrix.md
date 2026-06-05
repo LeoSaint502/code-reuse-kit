@@ -10,6 +10,7 @@ This document makes the Code Reuse Kit harness explicit. A guide tells an agent 
 |---|---|
 | `AGENTS.md` | Repository map and privacy boundary. |
 | `README.md` / `README.en.md` | Human setup and workflow guide. |
+| `docs/testing-strategy.md` | Test layers, privacy testing rules, and CI gate. |
 | `skills/code-reuse-skill.md` | Search-before-building behavior for agents. |
 | `skills/code-reuse-kit-save.md` | End-of-task archive behavior. |
 | `docs/agent-instructions/code-reuse-kit-save-prompt.md` | Shared prompt installed into agent configs. |
