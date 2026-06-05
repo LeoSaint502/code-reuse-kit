@@ -156,6 +156,23 @@ Scans all `.py` files, extracts every function/class definition, and registers t
 
 ---
 
+## Update Notes: Windows Search And Backfill Fixes
+
+- `scripts/search_code.py` now runs `ca search` from `~/code-reuse-kit`, so calls from other project directories search the same library.
+- `scripts/backfill_code_library.py` and `scripts/extract_from_diff.py` now use UTF-8 output, `--tags`, relative-path citations, and richer one-line summaries.
+- For non-git projects or existing code, use `backfill_code_library.py --dry-run` first, then run it without `--dry-run` when the preview looks right.
+
+## Troubleshooting
+
+| Symptom | Fix |
+|---------|-----|
+| Windows console raises GBK/UnicodeEncodeError | Updated scripts configure UTF-8 output; if needed, run `chcp 65001` before retrying. |
+| `ca search` finds entries but `search_code.py` does not | Update the wrapper and retry; it now searches from `~/code-reuse-kit`. |
+| Current project is not a git repository | Run `python ~/code-reuse-kit/scripts/backfill_code_library.py --dir <directory>` to index it manually. |
+| Windows `C:\...` citations parse incorrectly | Updated scripts convert citations to relative paths before appending `:line`. |
+
+---
+
 ## Manual Commands
 
 ```bash
@@ -232,6 +249,7 @@ This project builds upon and references the following open-source projects:
 |---------|------|-------------|
 | **[compound-agent](https://github.com/Nathandela/compound-agent)** | Storage + search engine | JSONL+SQLite FTS5 storage, `ca learn/list/search` command design |
 | **[claudecode-kb](https://github.com/tangero/claudecode-kb)** | Organizational pattern | Knowledge base structure (`patterns/snippets/troubleshooting/memory`) |
+| Codex and GPT | Implementation assistance | Helped diagnose Windows path/cwd issues, design the update, and verify script behavior. |
 
 ### Researched but Not Directly Used
 

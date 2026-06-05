@@ -279,6 +279,21 @@ python ~/code-reuse-kit/scripts/backfill_code_library.py --dir /path/to/project/
 
 会自动扫描所有 .py 文件，提取函数/类定义注册到索引。已在项目1（49 条）和项目2（3 条）验证通过。
 
+## 更新说明：Windows 搜索与补录修复
+
+- `scripts/search_code.py` 现在固定在 `~/code-reuse-kit` 中运行 `ca search`，从其他项目目录调用也会查同一个代码库。
+- `scripts/backfill_code_library.py` 和 `scripts/extract_from_diff.py` 会使用 UTF-8 输出、`--tags` 标签参数、相对路径 citation，以及更完整的一行摘要。
+- 非 Git 项目或历史代码可以继续用 `backfill_code_library.py --dry-run` 先预览，再正式补录。
+
+## 故障排查
+
+| 问题 | 处理方式 |
+|------|----------|
+| Windows 控制台出现 GBK/UnicodeEncodeError | 更新后脚本会自动配置 UTF-8；仍异常时先运行 `chcp 65001` 再重试。 |
+| `ca search` 能搜到，但 `search_code.py` 搜不到 | 更新脚本后重试；包装脚本现在会固定到 `~/code-reuse-kit` 搜索。 |
+| 当前项目不是 Git 仓库 | 使用 `python ~/code-reuse-kit/scripts/backfill_code_library.py --dir <目录>` 手动补录。 |
+| Windows 路径里有 `C:\...` | 脚本会把 citation 转成相对路径，避免 `file:line` 解析被盘符冒号干扰。 |
+
 
 
 ## 📚 参考与致谢
@@ -291,6 +306,7 @@ python ~/code-reuse-kit/scripts/backfill_code_library.py --dir /path/to/project/
 |------|------|-----------|
 | **[compound-agent](https://github.com/Nathandela/compound-agent)** ⭐18 | 存储引擎 + 搜索引擎 | JSONL+SQLite FTS5 存储模式，`ca learn/list/search` 命令设计，lessons 生命周期管理，hook 系统 |
 | **[claudecode-kb](https://github.com/tangero/claudecode-kb)** ⭐9 | 文件组织思路 | 按 `patterns/snippets/troubleshooting/memory` 分类的知识库结构，JSONL 会话日志 append-only 设计 |
+| Codex and GPT | 实现协助 | 帮助诊断 Windows 路径/cwd 问题，设计本次更新，并验证脚本行为 |
 
 ### 调研但未直接采用
 
