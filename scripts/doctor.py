@@ -77,6 +77,8 @@ def sanitize_value(value: object, *, home: Path | None = None, root: Path | None
             if normalized.startswith(root_text + "/"):
                 normalized = normalized[len(root_text) + 1 :]
                 break
+            if root_text + "/" in normalized:
+                normalized = normalized.replace(root_text + "/", "")
     for home_text in _path_forms(home):
         if normalized == home_text:
             normalized = "~"
@@ -84,6 +86,8 @@ def sanitize_value(value: object, *, home: Path | None = None, root: Path | None
         if normalized.startswith(home_text + "/"):
             normalized = "~/" + normalized[len(home_text) + 1 :]
             break
+        if home_text + "/" in normalized:
+            normalized = normalized.replace(home_text + "/", "~/")
     return normalized
 
 
@@ -107,6 +111,14 @@ def run_text(cmd: list[str], *, cwd: Path | None = None) -> str:
     if result.returncode != 0:
         return ""
     return result.stdout.strip()
+
+
+def read_tail(path: Path, *, max_chars: int = 1000) -> str:
+    try:
+        text = path.read_text(encoding="utf-8", errors="replace")
+    except OSError:
+        return ""
+    return text[-max_chars:].strip()
 
 
 def sanitize_item(item: dict[str, str], *, home: Path, root: Path) -> dict[str, str]:
@@ -190,6 +202,13 @@ def collect_report(*, root: Path, home: Path | None = None) -> dict[str, object]
             root=root,
         )
     )
+
+    hook_log = library_dir / "logs" / "extract.log"
+    tail = read_tail(hook_log)
+    if tail:
+        checks.append(sanitize_item(status("hook-log", "ok", "recent log found", tail), home=home, root=root))
+    else:
+        checks.append(sanitize_item(status("hook-log", "warn", "no extract log found yet", hook_log), home=home, root=root))
 
     return {
         "tool": "code-reuse-kit doctor",

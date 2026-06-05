@@ -30,6 +30,7 @@ DEFAULT_REQUIRED_SCRIPTS = [
     "scripts/doctor.py",
     "scripts/audit_index.py",
     "scripts/check_consistency.py",
+    "scripts/ci_verify.py",
 ]
 
 CODE_SPAN_RE = re.compile(r"`([^`\n]+)`")

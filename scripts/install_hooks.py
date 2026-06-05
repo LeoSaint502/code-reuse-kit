@@ -29,6 +29,8 @@ CODE_LIBRARY_DIR = os.path.expanduser("~/code-reuse-kit")
 SCRIPTS_DIR = os.path.join(CODE_LIBRARY_DIR, "scripts")
 HOOKS_DIR = os.path.expanduser("~/.git-hooks")
 POST_COMMIT_PATH = os.path.join(HOOKS_DIR, "post-commit")
+LOG_DIR = os.path.join(CODE_LIBRARY_DIR, "logs")
+EXTRACT_LOG = os.path.join(LOG_DIR, "extract.log")
 
 SYNC_SCRIPT = os.path.join(SCRIPTS_DIR, "sync.py")
 EXTRACT_SCRIPT = os.path.join(SCRIPTS_DIR, "extract_from_diff.py")
@@ -97,16 +99,15 @@ def set_global_hooks_path():
     ok(f"已设置全局 core.hooksPath → {HOOKS_DIR}")
 
 
-def install_post_commit_hook():
-    """创建 post-commit hook：每次 commit 后自动运行 extract_from_diff.py"""
-    ensure_hooks_dir()
-
-    hook_content = f'''#!/usr/bin/env sh
+def build_post_commit_hook(extract_script: str, code_library_dir: str, log_file: str) -> str:
+    return f'''#!/usr/bin/env sh
 # ── Code Reuse Kit: auto-extract on commit ──────────────────────────
 # 每次 git commit 后，自动从本次 diff 中提取新增函数/类入库。
 # 由 install_hooks.py 安装，无需手动操作。
 
-EXTRACT_SCRIPT="{EXTRACT_SCRIPT}"
+EXTRACT_SCRIPT="{extract_script}"
+CODE_LIBRARY_DIR="{code_library_dir}"
+LOG_FILE="{log_file}"
 
 if [ ! -f "$EXTRACT_SCRIPT" ]; then
     exit 0
@@ -119,16 +120,25 @@ if [ -z "$REPO_DIR" ]; then
 fi
 
 # 跳过 code-reuse-kit 仓库自身（避免递归）
-if [ "$REPO_DIR" = "{CODE_LIBRARY_DIR}" ]; then
+if [ "$REPO_DIR" = "$CODE_LIBRARY_DIR" ]; then
     exit 0
 fi
 
+mkdir -p "$(dirname "$LOG_FILE")"
+printf '\\n[%s] repo=%s\\n' "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" "$REPO_DIR" >> "$LOG_FILE"
+
 # 静默执行，不阻塞 commit。失败也不影响。
-python3 "$EXTRACT_SCRIPT" --repo "$REPO_DIR" --silent 2>/dev/null || \\
-python "$EXTRACT_SCRIPT" --repo "$REPO_DIR" --silent 2>/dev/null || true
+python3 "$EXTRACT_SCRIPT" --repo "$REPO_DIR" --silent >> "$LOG_FILE" 2>&1 || \\
+python "$EXTRACT_SCRIPT" --repo "$REPO_DIR" --silent >> "$LOG_FILE" 2>&1 || true
 
 exit 0
 '''
+
+
+def install_post_commit_hook():
+    """创建 post-commit hook：每次 commit 后自动运行 extract_from_diff.py"""
+    ensure_hooks_dir()
+    hook_content = build_post_commit_hook(EXTRACT_SCRIPT, CODE_LIBRARY_DIR, EXTRACT_LOG)
 
     with open(POST_COMMIT_PATH, "w", encoding="utf-8", newline="\n") as f:
         f.write(hook_content)

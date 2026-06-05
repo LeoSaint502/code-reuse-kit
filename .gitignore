@@ -11,4 +11,5 @@ __pycache__/
 venv/
 node_modules/
 tmp/
+logs/
 .claude/settings.json

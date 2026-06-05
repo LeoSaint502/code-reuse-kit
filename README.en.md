@@ -88,6 +88,7 @@ Code Reuse Kit is a practical Harness Engineering component: a memory and reuse 
 4. Doctor diagnostics check the local harness without exposing private paths or credentials.
 5. Index audit checks stale citations, duplicate entries, and low-quality metadata without modifying the index.
 6. Consistency checks catch missing local docs and scripts before they drift.
+7. CI runs the lightweight verification suite on push and pull request.
 
 Run:
 
@@ -113,6 +114,12 @@ Check documentation consistency:
 ```bash
 python scripts/check_consistency.py
 python scripts/check_consistency.py --json
+```
+
+Run the same lightweight suite used by CI:
+
+```bash
+python scripts/ci_verify.py
 ```
 
 Diagnostic output is privacy-safe by default: home paths, emails, credential-like values, and authenticated URLs are sanitized.
@@ -232,6 +239,9 @@ python ~/code-reuse-kit/scripts/audit_index.py
 # Check documentation consistency
 python ~/code-reuse-kit/scripts/check_consistency.py
 
+# Run lightweight CI verification locally
+python ~/code-reuse-kit/scripts/ci_verify.py
+
 # Uninstall auto-config
 python ~/code-reuse-kit/scripts/install_hooks.py --uninstall
 
@@ -279,6 +289,7 @@ python ~/code-reuse-kit/scripts/install_code_library.py
     doctor.py                  <- Privacy-safe local health diagnostics
     audit_index.py             <- Privacy-safe index quality audit
     check_consistency.py       <- Privacy-safe documentation consistency check
+    ci_verify.py               <- Local lightweight CI verification suite
     sync.py                    <- Daily sync (git pull + rebuild index)
   skills/
     code-reuse-kit-save.md     <- Reasonix auto-archive skill

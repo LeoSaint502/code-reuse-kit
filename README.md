@@ -289,6 +289,7 @@ Code Reuse Kit 是一个落地型 Harness Engineering 组件：它为 coding age
 4. Doctor 诊断本地 harness 状态，同时避免泄露个人路径或凭据。
 5. Index audit 检查失效 citation、重复条目和低质量元数据，不修改索引。
 6. Consistency check 在文档漂移前发现缺失的本地文档和脚本。
+7. CI 在 push 和 pull request 时运行轻量验证套件。
 
 运行：
 
@@ -314,6 +315,12 @@ python scripts/audit_index.py --json
 ```bash
 python scripts/check_consistency.py
 python scripts/check_consistency.py --json
+```
+
+运行与 CI 相同的轻量验证套件：
+
+```bash
+python scripts/ci_verify.py
 ```
 
 诊断输出默认做隐私保护：会脱敏 home 路径、邮箱、疑似凭据和值带认证信息的 URL。
@@ -405,6 +412,9 @@ python ~/code-reuse-kit/scripts/audit_index.py
 # 检查文档一致性
 python ~/code-reuse-kit/scripts/check_consistency.py
 
+# 本地运行轻量 CI 验证
+python ~/code-reuse-kit/scripts/ci_verify.py
+
 # 卸载自动配置
 python ~/code-reuse-kit/scripts/install_hooks.py --uninstall
 
@@ -438,6 +448,7 @@ python ~/code-reuse-kit/scripts/install_agent_config.py --project .
     doctor.py                  ← 隐私安全的本地健康诊断
     audit_index.py             ← 隐私安全的索引质量审计
     check_consistency.py       ← 隐私安全的文档一致性检查
+    ci_verify.py               ← 本地轻量 CI 验证套件
     sync.py                    ← 每日同步（git pull + 重建索引）
   skills/
     code-reuse-kit-save.md       ← Reasonix 自动存档 skill

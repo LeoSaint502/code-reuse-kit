@@ -48,6 +48,19 @@ class DoctorPrivacyTests(unittest.TestCase):
         self.assertNotIn("/home/person", serialized)
         self.assertIn("~/", serialized)
 
+    def test_collect_report_includes_sanitized_hook_log_tail(self):
+        root = Path("/home/person/code-reuse-kit")
+        with mock.patch("doctor.shutil.which", return_value=None):
+            with mock.patch("doctor.run_text", return_value=""):
+                with mock.patch("doctor.Path.exists", return_value=False):
+                    with mock.patch("doctor.read_tail", return_value="failed repo=/home/person/private-project token=abc"):
+                        report = doctor.collect_report(root=root, home=Path("/home/person"))
+        serialized = json.dumps(report, ensure_ascii=False)
+        self.assertIn("hook-log", serialized)
+        self.assertNotIn("/home/person", serialized)
+        self.assertNotIn("token=abc", serialized)
+        self.assertIn("token=<redacted-secret>", serialized)
+
 
 if __name__ == "__main__":
     unittest.main()
