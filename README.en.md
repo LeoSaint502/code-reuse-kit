@@ -86,6 +86,7 @@ Code Reuse Kit is a practical Harness Engineering component: a memory and reuse 
 2. Hooks and ingestion scripts record reusable metadata.
 3. Search retrieves prior work before new code is written.
 4. Doctor diagnostics check the local harness without exposing private paths or credentials.
+5. Index audit checks stale citations, duplicate entries, and low-quality metadata without modifying the index.
 
 Run:
 
@@ -97,6 +98,13 @@ For machine-readable output:
 
 ```bash
 python scripts/doctor.py --json
+```
+
+Audit index quality:
+
+```bash
+python scripts/audit_index.py
+python scripts/audit_index.py --json
 ```
 
 Diagnostic output is privacy-safe by default: home paths, emails, credential-like values, and authenticated URLs are sanitized.
@@ -210,6 +218,9 @@ python ~/code-reuse-kit/scripts/extract_from_diff.py --repo .
 # Sync with remote
 cd ~/code-reuse-kit && python scripts/sync.py
 
+# Audit index quality
+python ~/code-reuse-kit/scripts/audit_index.py
+
 # Uninstall auto-config
 python ~/code-reuse-kit/scripts/install_hooks.py --uninstall
 
@@ -254,6 +265,8 @@ python ~/code-reuse-kit/scripts/install_code_library.py
     install_code_library.py    <- One-click installer (start here)
     install_hooks.py           <- Install global git hook + scheduler
     install_agent_config.py    <- Install AI agent auto-archive rules
+    doctor.py                  <- Privacy-safe local health diagnostics
+    audit_index.py             <- Privacy-safe index quality audit
     sync.py                    <- Daily sync (git pull + rebuild index)
   skills/
     code-reuse-kit-save.md     <- Reasonix auto-archive skill

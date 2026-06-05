@@ -22,6 +22,7 @@ Code Reuse Kit is a practical Harness Engineering memory and reuse layer for cod
 | `scripts/install_agent_config.py` | Agent-specific auto-archive instructions. |
 | `scripts/sync.py` | Pull and rebuild the local code reuse index. |
 | `scripts/doctor.py` | Privacy-safe local health diagnostics. |
+| `scripts/audit_index.py` | Privacy-safe index quality audit. |
 
 ## Verification
 
@@ -30,8 +31,10 @@ Run focused checks before reporting completion:
 ```powershell
 python -m unittest tests.test_code_reuse_common -v
 python -m unittest tests.test_doctor -v
-python -m py_compile scripts\code_reuse_common.py scripts\doctor.py
+python -m unittest tests.test_audit_index -v
+python -m py_compile scripts\code_reuse_common.py scripts\doctor.py scripts\audit_index.py
 python scripts\doctor.py
+python scripts\audit_index.py
 ```
 
 Use dry runs before writing to the code library:
