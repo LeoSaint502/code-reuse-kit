@@ -106,6 +106,8 @@ def run_ca(
     cwd: Path | None = None,
     timeout: int | None = None,
 ) -> subprocess.CompletedProcess[str]:
+    env = os.environ.copy()
+    env.setdefault("PYTHONIOENCODING", "utf-8")
     return subprocess.run(
         cmd,
         capture_output=True,
@@ -113,5 +115,6 @@ def run_ca(
         encoding="utf-8",
         errors="replace",
         cwd=str(cwd or code_library_dir()),
+        env=env,
         timeout=timeout,
     )

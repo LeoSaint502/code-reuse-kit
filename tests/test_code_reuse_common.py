@@ -57,6 +57,20 @@ class CodeReuseCommonTests(unittest.TestCase):
         common.add_tags_args(cmd, [])
         self.assertEqual(cmd, ["ca", "learn", "summary"])
 
+    def test_run_ca_defaults_to_code_library_cwd(self):
+        old = os.environ.get("CODE_REUSE_KIT_DIR")
+        try:
+            os.environ["CODE_REUSE_KIT_DIR"] = str(ROOT)
+            result = common.run_ca(
+                [sys.executable, "-c", "import os; print(os.getcwd())"]
+            )
+            self.assertEqual(Path(result.stdout.strip()), ROOT)
+        finally:
+            if old is None:
+                os.environ.pop("CODE_REUSE_KIT_DIR", None)
+            else:
+                os.environ["CODE_REUSE_KIT_DIR"] = old
+
 
 if __name__ == "__main__":
     unittest.main()
