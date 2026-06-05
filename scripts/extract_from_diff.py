@@ -27,41 +27,15 @@ import sys
 import ast
 from pathlib import Path
 
-# ── ca 命令定位（兼容 Windows / Linux / macOS） ──────────────────────────
-
-def find_ca() -> str:
-    # Windows: .cmd 优先，否则 subprocess 无法执行 shell 脚本
-    if os.name == "nt":
-        ca = _which("ca.cmd")
-        if ca:
-            return ca
-    ca = _which("ca")
-    if ca:
-        return ca
-    fallbacks = [
-        os.path.expanduser("~\\AppData\\Roaming\\npm\\ca.cmd"),
-        os.path.expanduser("~\\AppData\\Roaming\\npm\\ca"),
-        "/usr/local/bin/ca",
-        "/opt/homebrew/bin/ca",
-    ]
-    for p in fallbacks:
-        if os.path.isfile(p):
-            return p
-    return "ca"  # last resort, let subprocess fail with clear error
-
-
-def _which(cmd: str) -> str | None:
-    """shutil.which 替代：兼容各种环境"""
-    try:
-        r = subprocess.run(
-            ["where", cmd] if os.name == "nt" else ["which", cmd],
-            capture_output=True, text=True, timeout=3
-        )
-        if r.returncode == 0:
-            return r.stdout.strip().splitlines()[0]
-    except Exception:
-        pass
-    return None
+from code_reuse_common import (
+    add_tags_args,
+    code_library_dir,
+    configure_utf8_stdio,
+    find_ca,
+    make_citation,
+    normalize_summary,
+    run_ca,
+)
 
 
 # ── 参数解析 ────────────────────────────────────────────────────────────
@@ -344,14 +318,14 @@ def build_summary(item: dict, imports: str) -> str:
     """构建传给 ca learn 的摘要文本"""
     parts = [
         f"[{item['type']}] {item['name']}",
-        f"\n签名: {item['signature']}",
+        f"Signature: {item['signature']}",
     ]
     if item["docstring"]:
-        parts.append(f"\n说明: {item['docstring'][:200]}")
-    parts.append(f"\n文件: {item['file']}:{item['line']}")
+        parts.append(f"Docstring: {item['docstring'][:200]}")
+    parts.append(f"File: {item['file']}:{item['line']}")
     if imports:
-        parts.append(f"\n依赖: {imports[:200]}")
-    return "".join(parts)
+        parts.append(f"Imports: {imports[:200]}")
+    return normalize_summary("\n".join(parts))
 
 
 def register(ca: str, summary: str, tags: list[str], citation: str, dry_run: bool) -> bool:
@@ -361,14 +335,14 @@ def register(ca: str, summary: str, tags: list[str], citation: str, dry_run: boo
         "--type", "lesson",
         "--citation", citation,
     ]
-    if tags:
-        cmd.extend(["--trigger", ", ".join(tags)])
+    add_tags_args(cmd, tags)
 
     if dry_run:
-        print(f"  [模拟] ca learn → {item_type_from_summary(summary)} {name_from_summary(summary)}")
+        display_cmd = [cmd[0], "learn", "<summary>", *cmd[3:]]
+        print(f"  [DRY-RUN] {' '.join(display_cmd)}")
         return True
 
-    r = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+    r = run_ca(cmd, cwd=code_library_dir(), timeout=30)
     if r.returncode != 0:
         print(f"  [WARN] ca learn 失败: {r.stderr.strip()[:120]}", file=sys.stderr)
         return False
@@ -388,7 +362,7 @@ def name_from_summary(s: str) -> str:
 # ── 主流程 ──────────────────────────────────────────────────────────────
 
 def main():
-    sys.stdout.reconfigure(encoding='utf-8')
+    configure_utf8_stdio()
     args = parse_args()
     repo = os.path.abspath(args.repo)
 
@@ -435,7 +409,7 @@ def main():
         for item in items:
             tags = extract_tags(item["name"], item["docstring"], file_path)
             summary = build_summary(item, imports)
-            citation = f"{item['file']}:{item['line']}"
+            citation = make_citation(item["file"], item["line"], base_dir=repo)
             ok = register(ca, summary, tags, citation, args.dry_run)
             if ok:
                 report_lines.append(f"  ✓ [{item['type']}] {item['name']}  ← {citation}")
