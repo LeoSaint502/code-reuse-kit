@@ -71,6 +71,20 @@ class CodeReuseCommonTests(unittest.TestCase):
             else:
                 os.environ["CODE_REUSE_KIT_DIR"] = old
 
+    def test_normalize_summary_preserves_searchable_fields(self):
+        raw = "\n".join([
+            "[function] repair_docx",
+            "Signature: def repair_docx(path)",
+            "Docstring: Fix citation superscript font",
+            "File: scripts/repair.py:12",
+        ])
+        compact = common.normalize_summary(raw)
+        self.assertIn("[function] repair_docx", compact)
+        self.assertIn("Signature: def repair_docx(path)", compact)
+        self.assertIn("Docstring: Fix citation superscript font", compact)
+        self.assertIn("File: scripts/repair.py:12", compact)
+        self.assertNotIn("\n", compact)
+
 
 if __name__ == "__main__":
     unittest.main()

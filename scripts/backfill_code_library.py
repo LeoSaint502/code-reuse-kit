@@ -9,14 +9,21 @@ backfill_code_library.py — 一次性补录已有项目代码到代码图书馆
 import argparse
 import ast
 import os
-import subprocess
 import sys
-import shutil
-import json
 from pathlib import Path
 
+from code_reuse_common import (
+    add_tags_args,
+    code_library_dir,
+    configure_utf8_stdio,
+    find_ca,
+    make_citation,
+    normalize_summary,
+    run_ca,
+)
+
 # 代码图书馆根目录（ca learn 的 cwd，影响 lessons 写入位置）
-CODE_LIBRARY = os.path.expanduser("~/code-reuse-kit")
+CODE_LIBRARY = code_library_dir()
 
 
 def parse_args():
@@ -69,12 +76,14 @@ def extract_functions(file_path: str):
 
 def build_summary(item: dict) -> str:
     """构建 ca learn 摘要（同 extract_from_diff.py 格式）"""
-    parts = [f"[{item['kind']}] {item['name']}"]
+    parts = [
+        f"[{item['kind']}] {item['name']}",
+        f"Signature: {item['signature']}",
+    ]
     if item['docstring']:
-        parts.append(f"\n{item['docstring']}")
-    parts.append(f"\nFile: {item['file']}:{item['line']}")
-    parts.append(f"\nSignature: {item['signature']}")
-    return "".join(parts)
+        parts.append(f"Docstring: {item['docstring'][:200]}")
+    parts.append(f"File: {item['file']}:{item['line']}")
+    return normalize_summary("\n".join(parts))
 
 
 def auto_tags(name: str, docstring: str, file_path: str) -> list:
@@ -96,21 +105,17 @@ def auto_tags(name: str, docstring: str, file_path: str) -> list:
 
 def register(summary: str, tags: list, citation: str, dry_run: bool) -> bool:
     """通过 ca learn 注册到代码图书馆"""
-    ca_path = shutil.which("ca")
-    if not ca_path:
-        print("  [ERROR] 'ca' 命令未找到", file=sys.stderr)
-        return False
-
-    tags_str = ", ".join(tags)
+    ca_path = find_ca()
     cmd = [ca_path, "learn", summary, "--type", "lesson", "--citation", citation]
-    if tags_str:
-        cmd.extend(["--trigger", tags_str])
+    add_tags_args(cmd, tags)
 
     if dry_run:
-        print(f"  [DRY-RUN] ca learn \"{summary[:60]}...\"")
+        display_cmd = [cmd[0], "learn", "<summary>", *cmd[3:]]
+        print(f"  [DRY-RUN] {' '.join(display_cmd)}")
+        print(f"            {summary[:100]}...")
         return True
 
-    result = subprocess.run(cmd, capture_output=True, text=True, cwd=CODE_LIBRARY)
+    result = run_ca(cmd, cwd=CODE_LIBRARY)
     if result.returncode != 0:
         print(f"  [FAIL] {result.stderr.strip()}", file=sys.stderr)
         return False
@@ -118,6 +123,7 @@ def register(summary: str, tags: list, citation: str, dry_run: bool) -> bool:
 
 
 def main():
+    configure_utf8_stdio()
     args = parse_args()
     scan_dir = Path(args.dir)
     if not scan_dir.is_dir():
@@ -141,7 +147,7 @@ def main():
         for item in items:
             tags = auto_tags(item["name"], item["docstring"], str(py_file))
             summary = build_summary(item)
-            citation = f"{item['file']}:{item['line']}"
+            citation = make_citation(item["file"], item["line"], base_dir=scan_dir.parent)
 
             ok = register(summary, tags, citation, args.dry_run)
             if ok:
