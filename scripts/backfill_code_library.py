@@ -3,8 +3,8 @@
 backfill_code_library.py — 一次性补录已有项目代码到代码图书馆索引。
 
 用法：
-    python backfill_code_library.py --dir /path/to/private-project/scripts
-    python backfill_code_library.py --dir /path/to/private-docx-project  --pattern "_apply_polish.py"
+    python backfill_code_library.py --dir /path/to/project/scripts
+    python backfill_code_library.py --dir /path/to/project --pattern "_apply_polish.py"
 """
 import argparse
 import ast
